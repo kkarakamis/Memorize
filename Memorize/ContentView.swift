@@ -10,11 +10,12 @@ import SwiftUI
 struct ContentView: View {
     @State var emojiCount = 4
     var emojis = ["🫀", "🫁", "🦷", "🧠", "👅", "👁"]
+    var gridItemWidth = UIScreen.main.bounds.size.width/5
     
     var body: some View {
         VStack {
             ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 62))]) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: gridItemWidth))]) {
                     ForEach(emojis[0..<emojiCount], id: \.self){ emoji in
                         CardView(contentEmoji: emoji).aspectRatio(2/3, contentMode: .fit)
                     }
@@ -47,8 +48,6 @@ struct ContentView: View {
             emojiCount += value
         }
     }
-    
-
 }
 
 /*
