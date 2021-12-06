@@ -9,10 +9,27 @@ import Foundation
 
 struct MemoryGame<CardContent> where CardContent: Equatable {
     private(set) var cards: [Card]
+    private var indexOfSelectedCardFromPrevious: Card.ID?
     
     mutating func choose(_ card: Card) {
-        guard let choosenCardIndex = cards.firstIndex(where: { $0.id == card.id }) else {return }
-        cards[choosenCardIndex].isFaceUp.toggle()
+        if let choosenCardIndex = cards.firstIndex(where: { $0.id == card.id }),
+           !cards[choosenCardIndex].isFaceUp,
+           !cards[choosenCardIndex].isMatched
+        {
+            if let potentialMatchIndex = indexOfSelectedCardFromPrevious {
+                if cards[potentialMatchIndex].content == cards[choosenCardIndex].content {
+                    cards[potentialMatchIndex].isMatched = true
+                    cards[choosenCardIndex].isMatched = true
+                }
+                indexOfSelectedCardFromPrevious = nil
+            } else {
+                for index in cards.indices {
+                    cards[index].isFaceUp = false
+                }
+                indexOfSelectedCardFromPrevious = choosenCardIndex
+            }
+            cards[choosenCardIndex].isFaceUp.toggle()
+        }
     }
     
     init(numberOfPairsCards: Int, getCardContent: (Int) -> CardContent){
