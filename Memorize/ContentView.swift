@@ -8,97 +8,42 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var emojiCount = 4
-    var emojis = ["🫀", "🫁", "🦷", "🧠", "👅", "👁"]
+    @ObservedObject var game: EmojiMemoryGameVM
     var gridItemWidth = UIScreen.main.bounds.size.width/5
     
     var body: some View {
         VStack {
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: gridItemWidth))]) {
-                    ForEach(emojis[0..<emojiCount], id: \.self){ emoji in
-                        CardView(contentEmoji: emoji).aspectRatio(2/3, contentMode: .fit)
+                    ForEach(game.cards){ card in
+                        CardView(card: card)
+                            .aspectRatio(2/3, contentMode: .fit)
+                            .onTapGesture {
+                                game.choose(card)
+                            }
                     }
                 }
             }
-            Spacer()
-            buttonField.padding(.horizontal).font(.largeTitle)
         }
         .padding(.horizontal)
     }
-    
-    
-    var buttonField: some View {
-        HStack {
-            Button(action: {
-                changeEmojiCount(by: -1)
-            }, label: {
-                Image(systemName: "minus.square")
-            })
-        Spacer()
-            Button(action: {
-                changeEmojiCount(by: 1)
-            }, label: {
-                Image(systemName: "plus.square")
-            })
-        }
-    }
-    func changeEmojiCount(by value: Int) {
-        if (emojiCount + value) > 0 && (emojiCount + value) <= emojis.count {
-            emojiCount += value
-        }
-    }
 }
-
-/*
-struct ButtonField: View {
-    var emojiCount: Int
-    
-    var body: some View {
-        HStack {
-            removeButton
-            Spacer()
-            addButton
-        }
-        .padding(.horizontal)
-        .font(.largeTitle)
-    }
-    
-    let addButton = Button(action: {
-        
-    }, label: {
-        Image(systemName: "plus.square")
-    })
-    let removeButton = Button(action: {
-        
-    }, label: {
-        Image(systemName: "minus.square")
-    })
-
-}
-*/
-
-
 
 struct CardView: View {
-    @State var isFaceUp: Bool = true
-    var contentEmoji: String
+    let card: MemoryGame<String>.Card
     
     var body: some View {
         ZStack {
             let rectangleShape = RoundedRectangle(cornerRadius: 20)
-            if isFaceUp {
+            if card.isFaceUp {
                 rectangleShape.fill().foregroundColor(.white)
                 rectangleShape.strokeBorder(lineWidth: 3)
-                Text(contentEmoji).font(.largeTitle)
+                Text(card.content).font(.largeTitle)
             } else {
                 rectangleShape.fill()
             }
         }
         .foregroundColor(.orange)
-        .onTapGesture {
-            isFaceUp = !isFaceUp
-        }
     }
 }
 
@@ -120,6 +65,6 @@ struct CardView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(game: EmojiMemoryGameVM())
     }
 }
