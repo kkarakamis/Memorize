@@ -8,17 +8,18 @@
 import SwiftUI
 
 class EmojiMemoryGameVM: ObservableObject {
-    static let emojis = ["🫀", "🫁", "🦷", "🧠", "👅", "👁"]
+    typealias Card = MemoryGame<String>.Card
+    private static let emojis = ["🫀", "🫁", "🦷", "🧠", "👅", "👁"]
 
-    @Published private var model: MemoryGame<String> = MemoryGame<String>(numberOfPairsCards: 5, getCardContent: {index in emojis[index]})
+    @Published private var model = MemoryGame<String>(numberOfPairsCards: 5, getCardContent: {index in emojis[index]})
     
-    var cards: [MemoryGame<String>.Card] {
+    var cards: [Card] {
         return model.cards
     }
     
     // MARK: Indent
     
-    func choose(_ card: MemoryGame<String>.Card){
+    func choose(_ card: Card){
         model.choose(card)
     }
 }
