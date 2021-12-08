@@ -11,7 +11,11 @@ class EmojiMemoryGameVM: ObservableObject {
     typealias Card = MemoryGame<String>.Card
     private static let emojis = ["🫀", "🫁", "🦷", "🧠", "👅", "👁"]
 
-    @Published private var model = MemoryGame<String>(numberOfPairsCards: 5, getCardContent: {index in emojis[index]})
+    @Published private var model = createMemoryGame()
+    
+    private static func createMemoryGame() -> MemoryGame<String>{
+        return MemoryGame<String>(numberOfPairsCards: 5, getCardContent: {index in emojis[index]})
+    }
     
     var cards: [Card] {
         return model.cards
@@ -21,5 +25,9 @@ class EmojiMemoryGameVM: ObservableObject {
     
     func choose(_ card: Card){
         model.choose(card)
+    }
+    
+    func restart() {
+        model = EmojiMemoryGameVM.createMemoryGame()
     }
 }
