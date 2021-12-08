@@ -27,14 +27,15 @@ struct Cardify: ViewModifier {
     
     func body(content: Content) -> some View {
         ZStack {
-            Group {
-                RoundedRectangle(cornerRadius: DrawingConstants.cornerRadius).fill(Color.white)
-                RoundedRectangle(cornerRadius: DrawingConstants.cornerRadius).stroke(lineWidth: DrawingConstants.lineWidth)
-                content
+            let shape = RoundedRectangle(cornerRadius: DrawingConstants.cornerRadius)
+            if rotation<90 {
+                shape.fill().foregroundColor(.white)
+                shape.strokeBorder(lineWidth: DrawingConstants.lineWidth)
+            } else {
+                shape.fill()
             }
-                .opacity(isFaceUp ? 1 : 0)
-            RoundedRectangle(cornerRadius: DrawingConstants.cornerRadius).fill()
-                .opacity(isFaceUp ? 0 : 1)
+            content
+                .opacity(rotation<90 ? 1 : 0)
         }
         .rotation3DEffect(Angle.degrees(rotation), axis: (0,1,0))
     }

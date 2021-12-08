@@ -27,6 +27,10 @@ class EmojiMemoryGameVM: ObservableObject {
         model.choose(card)
     }
     
+    func shuffle() {
+        model.shuffle()
+    }
+    
     func restart() {
         model = EmojiMemoryGameVM.createMemoryGame()
     }
